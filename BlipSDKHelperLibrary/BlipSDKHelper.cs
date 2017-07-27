@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlipSDKHelperLibrary
 {
-    
+
     public static class BlipSDKHelper
     {
 
@@ -44,40 +44,46 @@ namespace BlipSDKHelperLibrary
                 (tmp.Header.Value as MediaLink).Uri = (content[i] as MediaLink).Uri;
                 (tmp.Header.Value as MediaLink).Type = (content[i] as MediaLink).Type;
 
-                var contentButtons = buttons.Select(b => b).Where(b => b.Container == i).OrderBy(b => b.Order);
-                DocumentSelectOption[] tmp_buttons = new DocumentSelectOption[contentButtons.Count()];
-                tmp_buttons = new DocumentSelectOption[contentButtons.Count()];
-
-
-                foreach (var button in contentButtons)
+                if (buttons != null)
                 {
 
-                    if (button.Type == ButtonType.Default)
+                    var contentButtons = buttons.Select(b => b).Where(b => b?.Container == i).OrderBy(b => b?.Order);
+                    DocumentSelectOption[] tmp_buttons = new DocumentSelectOption[contentButtons.Count()];
+
+                    foreach (var button in contentButtons)
                     {
 
-                        DocumentSelectOption tmp_button = new DocumentSelectOption();
-                        tmp_button.Order = button.Order;
-                        tmp_button.Label = new DocumentContainer();
-                        tmp_button.Label.Value = button.DocumentType;
-                        tmp_button.Value = new DocumentContainer();
-                        tmp_button.Value.Value = CreateText(button.Value);
-                        tmp_buttons[id_button] = tmp_button;
-                        id_button++;
-                    }
-                    else if (button.Type == ButtonType.Share)
-                    {
-                        DocumentSelectOption tmp_button = new DocumentSelectOption();
-                        tmp_button.Order = button.Order;
-                        tmp_button.Label = new DocumentContainer();
-                        tmp_button.Label.Value = button.DocumentType;
-                        tmp_buttons[id_button] = tmp_button;
-                        id_button++;
+                        if (button.Type == ButtonType.Default)
+                        {
+
+                            DocumentSelectOption tmp_button = new DocumentSelectOption();
+                            tmp_button.Order = button.Order;
+                            tmp_button.Label = new DocumentContainer();
+                            tmp_button.Label.Value = button.DocumentType;
+                            tmp_button.Value = new DocumentContainer();
+                            tmp_button.Value.Value = CreateText(button.Value);
+                            tmp_buttons[id_button] = tmp_button;
+                            id_button++;
+                        }
+                        else if (button.Type == ButtonType.Share)
+                        {
+                            DocumentSelectOption tmp_button = new DocumentSelectOption();
+                            tmp_button.Order = button.Order;
+                            tmp_button.Label = new DocumentContainer();
+                            tmp_button.Label.Value = button.DocumentType;
+                            tmp_buttons[id_button] = tmp_button;
+                            id_button++;
+
+                        }
+
 
                     }
-
-
+                    tmp.Options = tmp_buttons;
                 }
-                tmp.Options = tmp_buttons;
+                else
+                {
+                    tmp.Options = new DocumentSelectOption[0];
+                }
                 carroussel.Items[i] = tmp;
             }
             return carroussel;
@@ -173,7 +179,7 @@ namespace BlipSDKHelperLibrary
             document.Type = MediaType.Parse("image/*");
             document.PreviewUri = previewImageUri;
             document.Uri = imageUri;
-
+            
             return document;
         }
 
@@ -318,7 +324,6 @@ namespace BlipSDKHelperLibrary
             document.Header = new DocumentContainer();
             document.Header.Value = new PlainText();
             (document.Header.Value as PlainText).Text = MenuText;
-            //$"Onde você está? 🙂\n\n📨Envie seu CEP, endereço ou localização"
 
             DocumentSelectOption[] selectOption = new DocumentSelectOption[options.Count()];
 
